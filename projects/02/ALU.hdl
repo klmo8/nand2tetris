@@ -43,32 +43,37 @@ CHIP ALU {
 
     PARTS:
     // x
-    Not16 (in[0..15]=zx, out=notzx);
-    And16 (a=x, b=zx, out=andoutx);
-    Not16 (in[0..15]=andoutx, out=notandoutx);
-    Mux16 (a=andoutx, b=notandoutx, sel=nx, out=muxoutnx);
+    // Not16 (in[0..15]=zx, out=notzx);
+    // And16 (a=x, b=zx, out=andoutx);
+    Not16 (in=x, out=notx);
+    And16 (a=x, b=notx, out=zeros1);
+    Mux16 (a=x, b=zeros1, sel=zx, out=muxoutzx);
+    Not16 (in=muxoutzx, out=notmuxoutzx);
+    Mux16 (a=muxoutzx, b=notmuxoutzx, sel=nx, out=muxoutnx);
 
     // y
-    Not16 (in[0..15]=zy, out=notzy);
-    And16 (a=y, b=notzy, out=andouty);
-    Not16 (in[0..15]=andouty, out=notandouty);
-    Mux16 (a=andouty, b=notandouty, sel=ny, out=muxoutny);
+    // Not16 (in[0..15]=zy, out=notzy);
+    // And16 (a=y, b=notzy, out=andouty);
+    Not16 (in=y, out=noty);
+    And16 (a=y, b=noty, out=zeros2);
+    Mux16 (a=y, b=zeros2, sel=zy, out=muxoutzy);
+    Not16 (in=muxoutzy, out=notmuxoutzy);
+    Mux16 (a=muxoutzy, b=notmuxoutzy, sel=ny, out=muxoutny);
 
     // xy
     And16 (a=muxoutnx, b=muxoutny, out=andoutxy);
     Add16 (a=muxoutnx, b=muxoutny, out=addoutxy);
-    Mux16 (a=andoutxy, b=addoutxy, out=muxoutxy1);
+    Mux16 (a=andoutxy, b=addoutxy, sel=f, out=muxoutxy1);
     Not16 (in=muxoutxy1, out=notmuxoutxy);
-    Mux16 (a=muxoutxy1, b=notmuxoutxy, out=out);
+    Mux16 (a=muxoutxy1, b=notmuxoutxy, sel=no, out[0..7]=orin1, out[8..15]=orin2, out[15]=msb, out=out);
 
     // zr
-    Or8Way (in=out[0..7], out=or8out1);
-    Or8Way (in=out[8..15], out=or8out2);
-    Or (a=or8out1, b=or8out2, out=zr);
+    Or8Way (in=orin1, out=or8out1);
+    Or8Way (in=orin2, out=or8out2);
+    Or (a=or8out1, b=or8out2, out=prezr);
+    Not (in=prezr, out=zr);
 
     // ng
     // Or (a=muxoutxy2[15], b=false, out=ng);
-    Mux (a=false, b=true, sel=muxoutxy2[15]);
-
-
+    Mux (a=false, b=true, sel=msb, out=ng);
 }
