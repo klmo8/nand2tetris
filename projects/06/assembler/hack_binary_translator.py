@@ -69,7 +69,6 @@ class HackBinaryTranslator():
         decimal_number = int(instruction)  # Convert string to integer
         binary_string = format(decimal_number, '016b')   # Convert integer to binary string
         return binary_string
-        # return binary_string[2:]  # Slice to remove the '0b' prefix
     
     @staticmethod
     def get_op_code_bit(comp):

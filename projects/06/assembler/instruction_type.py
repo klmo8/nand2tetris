@@ -9,11 +9,8 @@ class InstructionType(Enum):
     def get_instruction_type(instruction):
         first_char = instruction[0]
         if first_char == '@':
-            print("A INSTRUCTION")
             return InstructionType.A_INSTRUCTION
         elif first_char == '(':
-            print("L INSTRUCTION")
             return InstructionType.L_INSTRUCTION
         else:
-            print("C INSTRUCTION")
             return InstructionType.C_INSTRUCTION
